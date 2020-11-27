@@ -100,7 +100,7 @@ router.post('/', async ctx => {
 
 router.patch('/patch', async ctx => {
 	try {
-		console.log('PATCXH /issue')
+		console.log('PATCH /issue')
 		console.log(ctx.request.body)
 		const data = ctx.request.body
 		const issue = await new Issues()
