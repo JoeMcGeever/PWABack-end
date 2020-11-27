@@ -12,7 +12,7 @@ async function custom404(ctx, next) {
 	try {
 		await next()
 		const status = ctx.status || 404
-		if(status === 404) ctx.throw(404)
+		if(status === 404) ctx.throw(404)  
 	} catch(err) {
 		ctx.status = 404
 		ctx.body = { status: 404, msg: 'route not found' }

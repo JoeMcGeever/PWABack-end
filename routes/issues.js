@@ -108,7 +108,7 @@ router.patch('/patch', async ctx => {
 		ctx.status = 201
 		ctx.body = {status: 'success', msg: 'Issue updated', hateos}
 	} catch(err) {
-		console.log('post error')
+		console.log('patch error')
 		console.log(err)
 		ctx.status = 404
 	  ctx.body = { err: err.message }
