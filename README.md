@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # REST Web API Template
 
 This code provides a working template for the development of modern REST APIs connecting to a MySQL database.

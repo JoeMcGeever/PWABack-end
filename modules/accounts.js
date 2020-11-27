@@ -22,7 +22,7 @@ class Accounts {
 		})()
 	}
 
-	/**
+    /**
 	 * registers a new user
 	 * @param {String} user the chosen username
 	 * @param {String} pass the chosen password
@@ -53,6 +53,8 @@ class Accounts {
 			throw err
 		}
 	}
+
+	
 
 	/**
 	 * checks to see if a set of login credentials are valid

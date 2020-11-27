@@ -4,12 +4,20 @@
 import Router from 'koa-router'
 import Accounts from '../modules/accounts.js'
 
-const router = new Router({ prefix: '/accounts' })
+const router = new Router({ prefix: 'v1/accounts' })
 
 // test route
 router.get('/', async ctx => {
 	ctx.status = 200
-  ctx.body = {status: 'success', msg: 'server running'}
+		ctx.body = 
+            account: {
+			collection: 'accounts',
+			url: `https://${ctx.host}/v1/accounts`
+            furtherUsage : {
+                `https://${ctx.host}/v1/accounts/` : 'POST - Adds a new account. Data must have username, password and email',
+                `https://${ctx.host}/v1/accounts/:username` : 'GET - Checks if credentials are valid',
+                 
+            }
 })
 
 // adds a new account

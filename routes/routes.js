@@ -6,7 +6,7 @@ import bodyParser from 'koa-body'
 // import cors from 'koa-cors'
 
 import accounts from'./accounts.js'
-import foo from'./foo.js'
+import issues from'./issues.js'
 
 async function custom404(ctx, next) {
 	try {
