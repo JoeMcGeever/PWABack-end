@@ -16,7 +16,7 @@ const hateos = {
 //'/v1/issues/distance/2' : 'GET - gets the 2nd page of issues ordered by nearest'
 
 
-let loggedInUserID //CHECK IF THIS IS THE BEST WAY TO DO THIS!!! 
+let loggedInUserID //stores the current logged in user ID -> used for updating status of issues (set to null after being used)
 
 
 async function middleware(ctx, next) {
@@ -40,6 +40,7 @@ async function middleware(ctx, next) {
 
 router.use(middleware)
 
+//test route
 router.get('/', async ctx => {
 	try {
         ctx.status = 200
@@ -53,13 +54,14 @@ router.get('/', async ctx => {
 	}
 })
 
+//get an individual issue
 router.get('/:issueID', async ctx => {
    try {
         const issueID = ctx.params.issueID
-        const issue = await new Issue()
-        const issueDetails = issue.getIssue(issueID)
+        const issue = await new Issues()
+        const issueDetails = await issue.getIssue(issueID)
         ctx.status=200
-        ctx.body = {'DETAILS: ' : issueDetails, 'further uses ' : hateos}
+        ctx.body = {'issue: ' : issueDetails, 'further uses ' : hateos}
 	} catch(err) {
 		console.log(err)
 		ctx.status = 404
@@ -67,13 +69,18 @@ router.get('/:issueID', async ctx => {
 	}
 })
 
+//gets a list of issues ordered by most recent with pagination
 router.get('/recent/:page', async ctx => {
    try {
-        const page = ctx.params.page
-        const issue = await new Issue()
-        const issueDetails = issue.getIssues(page)
+        let page = ctx.params.page
+        page = Number(page) - 1 //subtract 1 from page so 0 can be used in offset
+        if(!Number.isInteger(page)) throw new Error("Please choose a whole number (1 or above)")
+        if(page < 0) throw new Error("Please choose a page number (1 or above)")
+        const issue = await new Issues()
+        const issueDetails = await issue.getIssues(page)
+        if(issueDetails.length == 0) throw new Error("No results for this page")
         ctx.status=200
-        ctx.body = {'DETAILS: ' : issueDetails, 'further uses ' : hateos}
+        ctx.body = {'issues: ' : issueDetails, 'further uses ' : hateos}
 	} catch(err) {
 		console.log(err)
 		ctx.status = 404
@@ -81,6 +88,20 @@ router.get('/recent/:page', async ctx => {
 	}
 })
 
+//gets a list of issues ordered by closest with pagination
+// router.get('/distance/:page', async ctx = > {
+//    try {
+//         const page = ctx.params.page
+//         const issue = await new Issue()
+//         const issueDetails = issue.getIssuesDistance(page)
+//         ctx.status=200
+//         ctx.body = {'DETAILS: ' : issueDetails, 'further uses ' : hateos}
+// 	} catch(err) {
+// 		console.log(err)
+// 		ctx.status = 404
+// 	  ctx.body = { err: err.message, 'uses ' : hateos }
+// 	}
+// })
 
 
 // adds a new issue (without a picture)
@@ -119,6 +140,7 @@ router.patch('/patch', async ctx => {
 		const issue = await new Issues()
 		await issue.updateIssuesStatus(data.issueID, loggedInUserID, data.status) //note: loggedInUserID is set after the auth middleware
         //checktoken now returns the userID
+        loggedInUserID = null //set the logged in user ID to be null again
 		ctx.status = 201
 		ctx.body = {status: 'success', msg: 'Issue updated', 'further uses ' : hateos}
 	} catch(err) {
@@ -133,19 +155,6 @@ router.patch('/patch', async ctx => {
 
 
 
-// router.get('/distance/:page', async ctx = > {
-//    try {
-//         const page = ctx.params.page
-//         const issue = await new Issue()
-//         const issueDetails = issue.getIssuesDistance(page)
-//         ctx.status=200
-//         ctx.body = {'DETAILS: ' : issueDetails, 'further uses ' : hateos}
-// 	} catch(err) {
-// 		console.log(err)
-// 		ctx.status = 404
-// 	  ctx.body = { err: err.message, 'uses ' : hateos }
-// 	}
-// })
 
 
 

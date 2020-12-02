@@ -54,36 +54,37 @@ class Issue {
 			throw err
 		}
 	}
-
+    
+    
 	/**
 	 * Gets a specified issue by its id
 	 * @param {int} id for the issue
-	 * @returns {???} ???
+	 * @returns {object} Returns the issue details
 	 */
 	async getIssue(id) {
-		const login = extractCredentials(token)
-		let sql = `SELECT * FROM issues WHERE id="${id}";`
-		try{
+        let sql = `SELECT issueID, title, description, locationXCoord, locationYCoord, status, image, timeOfIssue FROM issue WHERE issueID="${id}";`  
+        try{
             const records = await get(sql)
-            //CONVERT RECORDS TO JSON
+            return records
         }catch(err){
             throw new Error(`The SQL query: "${sql}" failed`)
         }
-		return records
 	}
     
     
     /**
 	 * Gets all recently added issues
-	 * @param {int} ...
-	 * @returns {??}...
+	 * @param {int} which page the user wants
+	 * @returns {[object]} Returns a list of all issues relevant to that page
 	 */
 	async getIssues(page) {
-		//page for pagination / offset
-		let sql = `SELECT * FROM issues;`
+		//assume 5 elements per page
+        const elementPerPage = 5
+        const offset = page * elementPerPage
+		let sql = `SELECT issueID, title, description, locationXCoord, locationYCoord, status, image, timeOfIssue FROM issue ORDER BY timeOfIssue DESC LIMIT ${elementPerPage} OFFSET ${offset};`
 		try{
-            const records = await get(sql)
-            //CONVERT RECORDS TO JSON
+            const records = await all(sql)
+            return records
         }catch(err){
             throw new Error(`The SQL query: "${sql}" failed`)
         }
