@@ -114,6 +114,12 @@ class Issue {
         
         let sql = `SELECT status FROM issue WHERE issueID = ${issueID}`
         const currentStatus = await get(sql) //validation based on the status change
+        
+        console.log("current status = ")
+        console.log(currentStatus.status)
+        console.log("new status = ")
+        console.log(status)
+            
         if(currentStatus == null){
             throw new Error(`No issue has been found`)
         }
@@ -122,9 +128,6 @@ class Issue {
         }
         if(currentStatus.status=="new" && status != "verified"){
             throw new Error(`The status must be verified before being ${status}`)
-        }
-        if(currentStatus.status=="verified" && status != "assigned"){
-            throw new Error(`The status must be assigned before being ${status}`)
         }
         if(currentStatus.status=="assigned" && status != "resolved"){
             throw new Error('the status can only be resolved from here')
@@ -140,6 +143,7 @@ class Issue {
                 throw new Error('The user who created the issue cannot verify / be assigned to the task')
             }
         }  
+            
                        
         if(status=="resolved"){ //if the user wants to update the issue to resolved         
             sql = `SELECT userID FROM issue WHERE issueID = ${issueID}` //but it is not their issue to resolve

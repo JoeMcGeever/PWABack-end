@@ -4,7 +4,7 @@
   "description": "This code provides a working template for the development of modern REST APIs connecting to a MySQL database.",
   "main": "index.js",
   "type": "module",
-    "engines": {
+  "engines": {
     "node": "14.x"
   },
   "scripts": {
@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.4.0",
     "bcrypt": "^5.0.0",
     "bcrypt-promise": "^2.0.0",
     "koa": "^2.13.0",
