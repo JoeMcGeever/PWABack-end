@@ -18,4 +18,6 @@ function extractCredentials(token) {
 	}
 }
 
+
+
 export { extractCredentials }

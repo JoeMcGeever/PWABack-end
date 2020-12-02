@@ -7,16 +7,17 @@ import mysql from 'mysql'
 // const connectionString = 'process.env.CLEARDB_DATABASE_URL'
 // const pool = mysql.createPool(connectionString)
 
-const localDB = 'mysql://apiuser:CHANGEME@localhost/api?reconnect=true'
-const connectionString = process.env.CLEARDB_DATABASE_URL || localDB
-const pool = mysql.createPool(connectionString)
 
-// const pool = mysql.createPool({
-// 	host: 'localhost',
-// 	user: 'apiuser',
-// 	database: 'api',
-// 	password: 'CHANGEME'
-// })
+const localDB = 'mysql://root:short-panda@localhost/local_community?reconnect=true' //i think ours is short-panda
+const connectionString = process.env.CLEARDB_DATABASE_URL || localDB
+//const pool = mysql.createPool(connectionString)
+
+ const pool = mysql.createPool({
+ 	host: 'localhost',
+ 	user: 'root',
+ 	database: 'local_community',
+ 	password: 'p455w0rd'
+ })
 
 pool.getConnection((err, connection) => {
     if (err) {

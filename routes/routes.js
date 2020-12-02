@@ -20,12 +20,12 @@ async function custom404(ctx, next) {
 }
 
 async function cors(ctx, next) {
-	console.log('CORS')
+    
 	ctx.set('Access-Control-Allow-Origin', '*')
   ctx.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
   ctx.set('Access-Control-Allow-Headers', 'X-Requested-With,content-type')
-  ctx.set('Access-Control-Allow-Credentials', true)
-	await next()
+  ctx.set('Access-Control-Allow-Credentials', false)
+	await next() //error here on post requests
 }
 
 const router = new Router()
@@ -35,7 +35,7 @@ const router = new Router()
 router.use(cors)
 router.use(bodyParser())
 
-const routes = [accounts, foo]
+const routes = [accounts, issues]
 for (const route of routes) {
 	router.use(route.routes())
 	router.use(route.allowedMethods())

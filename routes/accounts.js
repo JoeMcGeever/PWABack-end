@@ -4,20 +4,21 @@
 import Router from 'koa-router'
 import Accounts from '../modules/accounts.js'
 
-const router = new Router({ prefix: 'v1/accounts' })
+const router = new Router({ prefix: '/v1/accounts' })
+
+const hateos = {
+                '/v1/accounts' : 'POST - Adds a new account. Data must have username, password and email',
+                '/v1/accounts/testUser' : 'GET - Checks if credentials are valid for testUser'
+          }
+                
 
 // test route
 router.get('/', async ctx => {
 	ctx.status = 200
-		ctx.body = 
-            account: {
+	ctx.body = {account : {
 			collection: 'accounts',
-			url: `https://${ctx.host}/v1/accounts`
-            furtherUsage : {
-                `https://${ctx.host}/v1/accounts/` : 'POST - Adds a new account. Data must have username, password and email',
-                `https://${ctx.host}/v1/accounts/:username` : 'GET - Checks if credentials are valid',
-                 
-            }
+			url: `https://${ctx.host}/v1/accounts`,
+            furtherUsage : hateos}}
 })
 
 // adds a new account
@@ -27,14 +28,14 @@ router.post('/', async ctx => {
 		console.log(ctx.request.body)
 		const data = ctx.request.body
 		const account = await new Accounts()
-		await account.register(data.username, data.password, data.email)
+		await account.register(data.username, data.password, data.email, data.isCouncil, data.location)
 		ctx.status = 201
-		ctx.body = {status: 'success', msg: 'account created'}
+		ctx.body = {status: 'success', msg: 'account created', 'further usage ': hateos}
 	} catch(err) {
 		console.log('post error')
 		console.log(err)
 		ctx.status = 404
-	  ctx.body = { err: err.message }
+	  ctx.body = { err: err.message, 'uses :' : hateos }
 	}
 })
 
@@ -46,11 +47,11 @@ router.get('/:username', async ctx => {
 		const account = await new Accounts()
 		const validUser = await account.checkToken(token)
 		if(validUser !== ctx.params.username) throw new Error('credentials don\'t match URL')
-		ctx.body = {status: 'success', msg: `supplied credentials valid for user ${validUser}`}
+		ctx.body = {status: 'success', msg: `supplied credentials valid for user ${validUser}`, 'further usage ': hateos}
 	} catch(err) {
 		console.log(err)
 		ctx.status = 404
-	  ctx.body = { err: err.message }
+	  ctx.body = { err: err.message, 'uses :' : hateos }
 	}
 })
 

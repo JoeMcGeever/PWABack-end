@@ -6,17 +6,15 @@ import Router from 'koa-router'
 import Accounts from '../modules/accounts.js'
 import Issues from '../modules/issues.js'
 
-const router = new Router({ prefix: 'v1/issue' })
+const router = new Router({ prefix: '/v1/issue' })
 
-const hateos = issue: {
-			collection: 'issues',
-			url: `https://${ctx.host}/v1/issues`
-            furtherUsage : {
-                `https://${ctx.host}/v1/issues/:issueID` : 'GET - gets an issue from the given ID',
-                `https://${ctx.host}/v1/issues/recent/3` : 'GET - gets the 3rd page of issues ordered by recently added',
-                //`https://${ctx.host}/v1/issues/distance/2` : 'GET - gets the 2nd page of issues ordered by nearest'
+const hateos = {
+                '/v1/issues' : 'POST - adds an new issue, Data must have userID, title, location, description and an optional image',
+                '/v1/issues/5' : 'GET - gets an issue with the ID of 5',
+                '/v1/issues/recent/3' : 'GET - gets the 3rd page of issues ordered by recently added'
             }
-		}
+//'/v1/issues/distance/2' : 'GET - gets the 2nd page of issues ordered by nearest'
+
 
 async function middleware(ctx, next) {
 	console.log('MIDDLEWARE')
@@ -41,58 +39,65 @@ router.use(middleware)
 router.get('/', async ctx => {
 	try {
         ctx.status = 200
-		ctx.body = hateos
+		ctx.body = {issue: {
+			collection: 'issues',
+			url: `https://${ctx.host}/v1/issues`,
+            furtherUsage : hateos}}
 	} catch(err) {
 		console.error(err)
 		ctx.throw(404, err.message)
 	}
 })
 
-router.get('/:issueID', async ctx = > {
+router.get('/:issueID', async ctx => {
    try {
         const issueID = ctx.params.issueID
         const issue = await new Issue()
         const issueDetails = issue.getIssue(issueID)
         ctx.status=200
-        ctx.body = issueDetails
+        ctx.body = {'DETAILS: ' : issueDetails, 'further uses ' : hateos}
 	} catch(err) {
 		console.log(err)
 		ctx.status = 404
-	  ctx.body = { err: err.message }
+	  ctx.body = { err: err.message, 'uses ' : hateos }
 	}
 })
 
-router.get('/recent/:page', async ctx = > {
+router.get('/recent/:page', async ctx => {
    try {
         const page = ctx.params.page
         const issue = await new Issue()
         const issueDetails = issue.getIssues(page)
         ctx.status=200
-        ctx.body = issueDetails
+        ctx.body = {'DETAILS: ' : issueDetails, 'further uses ' : hateos}
 	} catch(err) {
 		console.log(err)
 		ctx.status = 404
-	  ctx.body = { err: err.message }
+	  ctx.body = { err: err.message, 'uses ' : hateos }
 	}
 })
 
 
 
-// adds a new issue
+// adds a new issue (without a picture)
 router.post('/', async ctx => {
 	try {
 		console.log('POST /issue')
 		console.log(ctx.request.body)
 		const data = ctx.request.body
+        
+        
+        //userID should be sent from client (saved in local storage on client side)
+        
 		const issue = await new Issues()
-		await issue.newIssue(data.user, data.title, data.location, data.description, data.image)
+		await issue.newIssue(data.userID, data.title, data.location, data.description)
 		ctx.status = 201
-		ctx.body = {status: 'success', msg: 'Issue created', hateos}
+		ctx.body = {status: 'success', msg: 'Issue created', 'further uses ' : hateos}
 	} catch(err) {
 		console.log('post error')
 		console.log(err)
 		ctx.status = 404
-	  ctx.body = { err: err.message }
+	  ctx.body = { err: err.message, 'uses ' : hateos }
 	}
 })
 
@@ -104,14 +109,14 @@ router.patch('/patch', async ctx => {
 		console.log(ctx.request.body)
 		const data = ctx.request.body
 		const issue = await new Issues()
-		await issue.newIssue(data.user, data.title, data.location, data.description, data.image)
+		await issue.updateIssuesStatus(data.issueID, data.userID, data.status)
 		ctx.status = 201
-		ctx.body = {status: 'success', msg: 'Issue updated', hateos}
+		ctx.body = {status: 'success', msg: 'Issue updated', 'further uses ' : hateos}
 	} catch(err) {
 		console.log('patch error')
 		console.log(err)
 		ctx.status = 404
-	  ctx.body = { err: err.message }
+	  ctx.body = { err: err.message, 'uses ' : hateos }
 	}
 })
 
@@ -125,11 +130,11 @@ router.patch('/patch', async ctx => {
 //         const issue = await new Issue()
 //         const issueDetails = issue.getIssuesDistance(page)
 //         ctx.status=200
-//         ctx.body = issueDetails
+//         ctx.body = {'DETAILS: ' : issueDetails, 'further uses ' : hateos}
 // 	} catch(err) {
 // 		console.log(err)
 // 		ctx.status = 404
-// 	  ctx.body = { err: err.message }
+// 	  ctx.body = { err: err.message, 'uses ' : hateos }
 // 	}
 // })
 
