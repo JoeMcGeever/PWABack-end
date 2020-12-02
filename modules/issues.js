@@ -101,11 +101,7 @@ class Issue {
 	 */
 	async updateIssuesStatus(issueID, userID, status) {
         
-        
-        
-        //note: only the original user can set the status to resolve!!!
-
-        
+      
         
         
          if(!(status == 'verified' || status == 'assigned' || status == 'resolved')){ //status has to be one of these three strings

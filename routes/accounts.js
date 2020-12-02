@@ -8,7 +8,8 @@ const router = new Router({ prefix: '/v1/accounts' })
 
 const hateos = {
                 '/v1/accounts' : 'POST - Adds a new account. Data must have username, password and email',
-                '/v1/accounts/testUser' : 'GET - Checks if credentials are valid for testUser'
+                '/v1/accounts/testUser' : 'GET - Checks if credentials are valid for testUser',
+                '/v1/accounts/top10' : 'GET - Returns the top 10 users, ordered by score'
           }
                 
 
@@ -24,7 +25,7 @@ router.get('/', async ctx => {
 // adds a new account
 router.post('/', async ctx => {
 	try {
-		console.log('POST /accounts')
+		console.log('POST /v1/accounts')
 		console.log(ctx.request.body)
 		const data = ctx.request.body
 		const account = await new Accounts()
@@ -39,10 +40,29 @@ router.post('/', async ctx => {
 	}
 })
 
+
+//gets top 10 users by score
+router.get('/top10', async ctx => {
+    try {
+		console.log('GET /v1/accounts/top10')
+
+		const account = await new Accounts()
+		const topTen = await account.getTopTen()
+                
+		ctx.status = 201
+		ctx.body = {status: 'success', top10: topTen, 'further usage ': hateos}
+	} catch(err) {
+		console.log('post error')
+		console.log(err)
+		ctx.status = 404
+	  ctx.body = { err: err.message, 'uses :' : hateos }
+	}
+})
+
 // checks if credentials are valid
 router.get('/:username', async ctx => {
 	try {
-		console.log(`/accounts/${ctx.params.username}`)
+		console.log(`/v1/accounts/${ctx.params.username}`)
 		const token = ctx.request.headers.authorization
 		const account = await new Accounts()
 		const validUser = await account.checkToken(token)

@@ -60,6 +60,26 @@ class Accounts {
 		}
 	}
 
+    
+    
+    /**
+	 * Gets the top 10 users ordered by score
+	 * @returns {??} returns the top 10 users ordered by score
+	 */
+	async getTopTen() {
+                
+		try {
+
+			const sql = 'SELECT username, score from accounts ORDER BY score desc limit 10;' //gets top 10 users
+            const topTen = await all(sql)
+            return topTen
+            
+		} catch(err) {
+			console.log('module error')
+			console.log(err)
+			throw err
+		}
+	}
 	
 
 	/**
