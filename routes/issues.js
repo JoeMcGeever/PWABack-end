@@ -105,6 +105,11 @@ router.post('/', async ctx => {
 
 router.patch('/patch', async ctx => {
 	try {
+        
+        
+        //NEED TO GET USERID FROM SESSION STORAGE!
+        
+        
 		console.log('PATCH /issue')
 		console.log(ctx.request.body)
 		const data = ctx.request.body

@@ -102,48 +102,96 @@ class Issue {
 	async updateIssuesStatus(issueID, userID, status) {
         
         
-        try {
         
-        if(status != 'verified' || status != 'assigned' || status != 'resolved'){
+        //note: only the original user can set the status to resolve!!!
+
+        
+        
+        
+         if(!(status == 'verified' || status == 'assigned' || status == 'resolved')){ //status has to be one of these three strings
             throw new Error('Status can only be either "verified", "assigned" or "resolved"')
         }
-        
+
+        try {
         
         
         let sql = `SELECT status FROM issue WHERE issueID = ${issueID}`
         const currentStatus = await get(sql) //validation based on the status change
-        if(currentStatus==status){
+        if(currentStatus == null){
+            throw new Error(`No issue has been found`)
+        }
+        if(currentStatus.status==status){
             throw new Error(`The status is already "${status}"`)
         }
+        if(currentStatus.status=="new" && status != "verified"){
+            throw new Error(`The status must be verified before being ${status}`)
+        }
+        if(currentStatus.status=="verified" && status != "assigned"){
+            throw new Error(`The status must be assigned before being ${status}`)
+        }
+        if(currentStatus.status=="assigned" && status != "resolved"){
+            throw new Error('the status can only be resolved from here')
+        }
+            
+            
+            
+            
+        if(status=="verified" || status =="assigned"){ //if the user wants to update the issue to verified / assigned
+            sql = `SELECT userID FROM issue WHERE issueID = ${issueID}` //but they are the original user
+            let theIssuesUser = await get(sql)
+            if(theIssuesUser.userID==userID){
+                throw new Error('The user who created the issue cannot verify / be assigned to the task')
+            }
+        }  
+                       
+        if(status=="resolved"){ //if the user wants to update the issue to resolved         
+            sql = `SELECT userID FROM issue WHERE issueID = ${issueID}` //but it is not their issue to resolve
+            let user = await get(sql)
+            if(user.userID!=userID){
+                throw new Error('Only the user who created the issue can resolve the issue')
+            }
+        }
+     
         
-        
-        
-        sql = `UPDATE issue SET status = ${status} WHERE issueID = ${issueID}`
+            
+            
+
+        sql = `UPDATE issue SET status = "${status}" WHERE issueID = ${issueID}`
         await run(sql) //actually updates the status of the issue
+        console.log(`After update status statement, sql = ${sql}`)
         
+            
+            
+            
         
         
         if(status=='verified'){
           sql = `UPDATE accounts SET score = score + 10 WHERE userID = ${userID}`//append 10 to score
           await run(sql)
+          console.log("Status has been changed to verified. +10 score to the user")
         }else if(status=='assigned'){
+            //set the assigned user:
+            sql = `UPDATE issue SET workedOnBy = ${userID} WHERE issueID = ${issueID}`
+            await run(sql)
             //send email here
             sql = `SELECT accounts.email FROM issue INNER JOIN accounts ON accounts.userID=issue.userID WHERE issue.issueID=${issueID}`
             let userEmail = await get(sql)
+            console.log("Status is assigned. Send email to:")
+            console.log(userEmail.email)
             //gets the email using an inner join (fk of userID)
             const emailClass = await new Email()
-            await emailClass.sendEmail(userEmail)  //calls the send email function           
+            await emailClass.sendEmail(userEmail.email)  //calls the send email function           
         }
         else if(status=='resolved'){
-          sql = `UPDATE accounts SET score = score + 20 WHERE userID = ${userID}`//append 20 to score
+          sql = `UPDATE accounts SET score = score + 20 WHERE userID = ${userID}`//append 20 to score (userID will be the user who created the issue in this instance)
           await run(sql)
-          sql = `UPDATE accounts, (SELECT userID from issue WHERE issueID = ${issueID}) AS issue SET accounts.score = accounts.score + 50 WHERE accounts.userID = issue.userID`
-          //append 50 to original users score
+          sql = `UPDATE accounts, (SELECT workedOnBy from issue WHERE issueID = ${issueID}) AS issue SET accounts.score = accounts.score + 50 WHERE accounts.userID = issue.workedOnBy`
+          //append 50 to the other users score 
           await run(sql)
         }
         
         }catch(err){
-            throw new Error(`The SQL query: "${sql}" failed`)
+            throw new Error(err)
         }
     
     
