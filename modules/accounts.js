@@ -85,18 +85,18 @@ class Accounts {
 	/**
 	 * checks to see if a set of login credentials are valid
 	 * @param {String} token the basic auth token
-	 * @returns {String} returns the username if credentials are valid
+	 * @returns {int} returns the users ID if credentials are valid
 	 */
 	async checkToken(token) {
 		const login = extractCredentials(token)
-		let sql = `SELECT count(userID) AS count FROM accounts WHERE username="${login.user}";`
+		let sql = `SELECT userID FROM accounts WHERE username="${login.user}";`
 		const records = await get(sql)
-		if(!records.count) throw new Error(`username "${login.user}" not found`)
+		if(records == null) throw new Error(`username "${login.user}" not found`)
 		sql = `SELECT password FROM accounts WHERE username = "${login.user}";`
 		const record = await get(sql)
 		const valid = await bcrypt.compare(login.pass, record.password)
 		if(valid === false) throw new Error(`invalid password for account "${login.user}"`)
-		return login.user
+		return records
 	}
 
 }

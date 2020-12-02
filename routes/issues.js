@@ -16,6 +16,9 @@ const hateos = {
 //'/v1/issues/distance/2' : 'GET - gets the 2nd page of issues ordered by nearest'
 
 
+let loggedInUserID //CHECK IF THIS IS THE BEST WAY TO DO THIS!!! 
+
+
 async function middleware(ctx, next) {
 	console.log('MIDDLEWARE')
 	if(ctx.method !== 'GET') {
@@ -24,6 +27,7 @@ async function middleware(ctx, next) {
 			const token = ctx.request.headers.authorization
 			const account = await new Accounts()
 			const validUser = await account.checkToken(token)
+            loggedInUserID = validUser.userID //set the loggedInUserID variable to be the userID 
 			await next()
 		} catch(err) {
 			ctx.status = 401
@@ -105,16 +109,16 @@ router.post('/', async ctx => {
 
 router.patch('/patch', async ctx => {
 	try {
+             
         
-        
-        //NEED TO GET USERID FROM SESSION STORAGE!
-        
+        console.log(loggedInUserID)
         
 		console.log('PATCH /issue')
 		console.log(ctx.request.body)
 		const data = ctx.request.body
 		const issue = await new Issues()
-		await issue.updateIssuesStatus(data.issueID, data.userID, data.status)
+		await issue.updateIssuesStatus(data.issueID, loggedInUserID, data.status) //note: loggedInUserID is set after the auth middleware
+        //checktoken now returns the userID
 		ctx.status = 201
 		ctx.body = {status: 'success', msg: 'Issue updated', 'further uses ' : hateos}
 	} catch(err) {

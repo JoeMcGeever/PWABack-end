@@ -163,6 +163,7 @@ class Issue {
         
         if(status=='verified'){
           sql = `UPDATE accounts SET score = score + 10 WHERE userID = ${userID}`//append 10 to score
+          console.log(sql)
           await run(sql)
           console.log("Status has been changed to verified. +10 score to the user")
         }else if(status=='assigned'){
