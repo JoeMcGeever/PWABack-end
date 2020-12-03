@@ -182,7 +182,7 @@ class Issue {
             console.log(userEmail.email)
             //gets the email using an inner join (fk of userID)
             const emailClass = await new Email()
-            await emailClass.sendEmail(userEmail.email)  //calls the send email function           
+            await emailClass.sendEmail(userEmail.email, issueID)  //calls the send email function           
         }
         else if(status=='resolved'){
           sql = `UPDATE accounts SET score = score + 20 WHERE userID = ${userID}`//append 20 to score (userID will be the user who created the issue in this instance)
