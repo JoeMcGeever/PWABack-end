@@ -38,7 +38,6 @@ class Accounts {
         
 		try {
 			Array.from(arguments).forEach( val => {
-                console.log(arguments)
 				if(val.length === 0) throw new Error('Please enter all of the fields!')
 			})
 			let sql = `SELECT COUNT(userID) as records FROM accounts WHERE username="${user}";`
@@ -90,7 +89,7 @@ class Accounts {
 	 */
 	async checkToken(token) {
 		const login = extractCredentials(token)
-		let sql = `SELECT userID, username FROM accounts WHERE username="${login.user}";`
+		let sql = `SELECT userID, username, isCouncil FROM accounts WHERE username="${login.user}";`
 		const records = await get(sql)
 		if(records == null) throw new Error(`username "${login.user}" not found`)
 		sql = `SELECT password FROM accounts WHERE username = "${login.user}";`

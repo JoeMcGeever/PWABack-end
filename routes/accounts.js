@@ -77,7 +77,7 @@ router.get('/:username', async ctx => {
         console.log(validUser)
         console.log(ctx.params.username)
 		if(validUser.username !== ctx.params.username) throw new Error('credentials don\'t match URL')
-		ctx.body = {status: 'success', msg: `supplied credentials valid for user ${validUser}`, 'userID' : validUser.userID, 'further usage ': hateos}
+		ctx.body = {status: 'success', msg: `supplied credentials valid for user ${validUser.username}`, 'userID' : validUser.userID, "isCouncil" : validUser.isCouncil, 'further usage ': hateos}
 	} catch(err) {
 		console.log(err)
 		ctx.status = 404
