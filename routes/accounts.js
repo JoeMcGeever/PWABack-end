@@ -27,9 +27,16 @@ router.post('/', async ctx => {
 	try {
 		console.log('POST /v1/accounts')
 		console.log(ctx.request.body)
-		const data = ctx.request.body
+		const data =  JSON.parse(ctx.request.body)
+        
+        console.log(typeof(data))
+        console.log(data.user)
+        
+        
+        
+        
 		const account = await new Accounts()
-		await account.register(data.username, data.password, data.email, data.isCouncil, data.location)
+		await account.register(data.user, data.pass, data.email, data.isCouncil, data.location)
 		ctx.status = 201
 		ctx.body = {status: 'success', msg: 'account created', 'further usage ': hateos}
 	} catch(err) {
@@ -64,8 +71,11 @@ router.get('/:username', async ctx => {
 	try {
 		console.log(`/v1/accounts/${ctx.params.username}`)
 		const token = ctx.request.headers.authorization
+        console.log(token)
 		const account = await new Accounts()
 		const validUser = await account.checkToken(token)
+        console.log(validUser)
+        console.log(ctx.params.username)
 		if(validUser !== ctx.params.username) throw new Error('credentials don\'t match URL')
 		ctx.body = {status: 'success', msg: `supplied credentials valid for user ${validUser}`, 'further usage ': hateos}
 	} catch(err) {

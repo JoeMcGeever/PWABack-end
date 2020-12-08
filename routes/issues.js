@@ -132,7 +132,7 @@ router.patch('/patch', async ctx => {
 	try {
              
         
-        console.log(loggedInUserID)
+        //console.log(loggedInUserID)
         
 		console.log('PATCH /issue')
 		console.log(ctx.request.body)
