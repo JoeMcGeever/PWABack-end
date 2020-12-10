@@ -7,6 +7,7 @@ import bodyParser from 'koa-body'
 
 import accounts from'./accounts.js'
 import issues from'./issues.js'
+import issuesV2 from'./issuesV2.js'
 
 async function custom404(ctx, next) {
 	try {
@@ -35,7 +36,7 @@ const router = new Router()
 router.use(cors)
 router.use(bodyParser())
 
-const routes = [accounts, issues]
+const routes = [accounts, issues, issuesV2]
 for (const route of routes) {
 	router.use(route.routes())
 	router.use(route.allowedMethods())

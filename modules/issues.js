@@ -79,9 +79,9 @@ class Issue {
 	 */
 	async getIssues(page) {
 		//assume 5 elements per page
-        const elementPerPage = 5
+        const elementPerPage = 6
         const offset = page * elementPerPage
-		let sql = `SELECT issueID, title, description, locationXCoord, locationYCoord, status, image, timeOfIssue FROM issue ORDER BY timeOfIssue DESC LIMIT ${elementPerPage} OFFSET ${offset};`
+		let sql = `SELECT issueID, title, description, status FROM issue ORDER BY timeOfIssue DESC LIMIT ${elementPerPage} OFFSET ${offset};`
 		try{
             const records = await all(sql)
             return records
@@ -90,6 +90,22 @@ class Issue {
         }
 		return records
 	}
+    
+    
+    /**
+	 * Gets the total number of issues
+	 * @returns {int} Returns the total number of issues
+	 */
+    async getIssueCount() {
+        let sql = 'SELECT COUNT(issueID) as count FROM issue;'
+        try{
+            const countIssues = await get(sql)
+            return countIssues.count
+        }catch(err){
+            throw new Error(`The SQL query: "${sql}" failed`)
+        }
+        return countIssues
+    }
     
     
     

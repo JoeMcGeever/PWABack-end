@@ -9,9 +9,10 @@ import Issues from '../modules/issues.js'
 const router = new Router({ prefix: '/v1/issue' })
 
 const hateos = {
-                '/v1/issues' : 'POST - adds an new issue, Data must have userID, title, location, description and an optional image',
-                '/v1/issues/5' : 'GET - gets an issue with the ID of 5',
-                '/v1/issues/recent/3' : 'GET - gets the 3rd page of issues ordered by recently added'
+                '/v1/issue' : 'POST - adds an new issue, Data must have userID, title, location, description and an optional image',
+                '/v1/issue/5' : 'GET - gets an issue with the ID of 5',
+                '/v1/issue/recent/3' : 'GET - gets the 3rd page of issues ordered by recently added',
+                '/v1/issue/all/total' : 'GET - gets total number of issues in the system'
             }
 //'/v1/issues/distance/2' : 'GET - gets the 2nd page of issues ordered by nearest'
 
@@ -43,7 +44,7 @@ router.get('/', async ctx => {
         ctx.status = 200
 		ctx.body = {issue: {
 			collection: 'issues',
-			url: `https://${ctx.host}/v1/issues`,
+			url: `https://${ctx.host}/v1/issue`,
             furtherUsage : hateos}}
 	} catch(err) {
 		console.error(err)
@@ -57,8 +58,23 @@ router.get('/:issueID', async ctx => {
         const issueID = ctx.params.issueID
         const issue = await new Issues()
         const issueDetails = await issue.getIssue(issueID)
+        if(issueDetails == null) throw new Error(`No issue found with id: ${issueID}`)
         ctx.status=200
-        ctx.body = {'issue: ' : issueDetails, 'further uses ' : hateos}
+        ctx.body = {issue : issueDetails, 'further uses ' : hateos}
+	} catch(err) {
+		console.log(err)
+		ctx.status = 404
+	  ctx.body = { err: err.message, 'uses ' : hateos }
+	}
+})
+
+//gets total number of issues
+router.get('/all/total', async ctx => {
+   try {
+        const issue = await new Issues()
+        const issueCount = await issue.getIssueCount()
+        ctx.status=200
+        ctx.body = {numberOfIssues : issueCount, 'further uses ' : hateos}
 	} catch(err) {
 		console.log(err)
 		ctx.status = 404
@@ -77,7 +93,7 @@ router.get('/recent/:page', async ctx => {
         const issueDetails = await issue.getIssues(page)
         if(issueDetails.length == 0) throw new Error("No results for this page")
         ctx.status=200
-        ctx.body = {'issues: ' : issueDetails, 'further uses ' : hateos}
+        ctx.body = {issues : issueDetails, 'further uses ' : hateos}
 	} catch(err) {
 		console.log(err)
 		ctx.status = 404
