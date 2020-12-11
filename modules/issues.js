@@ -40,9 +40,9 @@ class Issue {
             const userCoords = await locationClass.getCoordinates(location)   
             
             description = description //Format the description (with newlines etc)
-            let sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}")`
+            let sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, status) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "new")`
             if(image != null){
-                sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, image) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "${image}")`
+                sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, status, image) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "new", ${image}")`
             }
 			await run(sql) //insert the issue into the db
                        
@@ -129,6 +129,8 @@ class Issue {
 
         try {
         
+            
+            console.log(status)
         
         let sql = `SELECT status FROM issue WHERE issueID = ${issueID}`
         const currentStatus = await get(sql) //validation based on the status change
@@ -163,24 +165,29 @@ class Issue {
         }  
             
                        
-        if(status=="resolved"){ //if the user wants to update the issue to resolved         
-            sql = `SELECT userID FROM issue WHERE issueID = ${issueID}` //but it is not their issue to resolve
+        if(status=="resolved"){ //if the user wants to update the issue to resolved  
+            console.log("in resolved")
+            console.log(status)
+            sql = `SELECT userID, workedOnBy FROM issue WHERE issueID = ${issueID}` //but it is not their issue to resolve
             let user = await get(sql)
-            if(user.userID!=userID){
-                throw new Error('Only the user who created the issue can resolve the issue')
-            }
+            if(user.userID!=userID) throw new Error('Only the user who created the issue can resolve the issue')
+            
+            sql = `SELECT isCouncil FROM accounts WHERE userID = ${user.workedOnBy}`
+            let isCouncil = await get(sql)
+            console.log(isCouncil)
+            if(isCouncil.isCouncil==1) status = 'Resolved by Council'
         }
      
-        
+        console.log(status)
             
-            
+            console.log("here??")
 
         sql = `UPDATE issue SET status = "${status}" WHERE issueID = ${issueID}`
         await run(sql) //actually updates the status of the issue
         console.log(`After update status statement, sql = ${sql}`)
         
             
-            
+        console.log("updated")
             
         
         
@@ -202,7 +209,7 @@ class Issue {
             const emailClass = await new Email()
             await emailClass.sendEmail(userEmail.email, issueID)  //calls the send email function           
         }
-        else if(status=='resolved'){
+        else if(status=='resolved' || status=='Resolved by Council'){
           sql = `UPDATE accounts SET score = score + 20 WHERE userID = ${userID}`//append 20 to score (userID will be the user who created the issue in this instance)
           await run(sql)
           sql = `UPDATE accounts, (SELECT workedOnBy from issue WHERE issueID = ${issueID}) AS issue SET accounts.score = accounts.score + 50 WHERE accounts.userID = issue.workedOnBy`

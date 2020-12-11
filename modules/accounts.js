@@ -33,9 +33,7 @@ class Accounts {
 	async register(user, pass, email, isCouncil, location) {
         
         
-        const locationClass = await new Location()
-	    const userCoords = await locationClass.getCoordinates(location)
-        
+               
 		try {
 			Array.from(arguments).forEach( val => {
 				if(val.length === 0) throw new Error('Please enter all of the fields!')
@@ -50,7 +48,7 @@ class Accounts {
 			if(emails.records !== 0) throw new Error(`email address "${email}" is already in use`)
 			pass = await bcrypt.hash(pass, saltRounds)
 			console.log(`password length: ${pass.length}`)
-			sql = `INSERT INTO accounts(username, password, email, isCouncil, locationXCoord, locationYCoord) VALUES("${user}", "${pass}", "${email}", ${isCouncil}, ${userCoords[0]}, ${userCoords[1]})`
+			sql = `INSERT INTO accounts(username, password, email, isCouncil, location) VALUES("${user}", "${pass}", "${email}", ${isCouncil}, "${location}")`
 			await run(sql)
 			return true
 		} catch(err) {
