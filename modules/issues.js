@@ -31,7 +31,7 @@ class Issue {
 	 * @param {String} description is the issues description
 	 * @returns {Boolean} returns true if the new issue has been added
 	 */
-	async newIssue(userID, title, location, description) {
+	async newIssue(userID, title, location, description, image) {
 		try {
             //no image yet -> for v2 of the api
 
@@ -40,8 +40,10 @@ class Issue {
             const userCoords = await locationClass.getCoordinates(location)   
             
             description = description //Format the description (with newlines etc)
-            
             let sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}")`
+            if(image != null){
+                sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, image) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "${image}")`
+            }
 			await run(sql) //insert the issue into the db
                        
             sql = `UPDATE accounts SET score = score + 10 WHERE userID = ${userID}`//append 10 to score
@@ -62,7 +64,7 @@ class Issue {
 	 * @returns {object} Returns the issue details
 	 */
 	async getIssue(id) {
-        let sql = `SELECT issueID, title, description, locationXCoord, locationYCoord, status, image, timeOfIssue FROM issue WHERE issueID="${id}";`  
+        let sql = `SELECT * FROM issue WHERE issueID="${id}";`  
         try{
             const records = await get(sql)
             return records

@@ -12,9 +12,10 @@ const hateos = {
                 '/v1/issue' : 'POST - adds an new issue, Data must have userID, title, location, description and an optional image',
                 '/v1/issue/5' : 'GET - gets an issue with the ID of 5',
                 '/v1/issue/recent/3' : 'GET - gets the 3rd page of issues ordered by recently added',
-                '/v1/issue/all/total' : 'GET - gets total number of issues in the system'
+                '/v1/issue/all/total' : 'GET - gets total number of issues in the system',
+                '/v1/issue/patch' : 'PATCH - updates the status of an issue. Must have issueID, userID and status sent to it'
             }
-//'/v1/issues/distance/2' : 'GET - gets the 2nd page of issues ordered by nearest'
+//'/v1/issue/distance/2' : 'GET - gets the 2nd page of issues ordered by nearest'
 
 
 
@@ -125,10 +126,9 @@ router.post('/', async ctx => {
 		const data = JSON.parse(ctx.request.body)
         
         
-        //userID should be sent from client (saved in local storage on client side)
         
 		const issue = await new Issues()
-		await issue.newIssue(data.userID, data.title, data.location, data.description)
+		await issue.newIssue(data.userID, data.title, data.location, data.description, null)
 		ctx.status = 201
 		ctx.body = {status: 'success', msg: 'Issue created', 'further uses ' : hateos}
 	} catch(err) {
@@ -143,12 +143,11 @@ router.post('/', async ctx => {
 
 router.patch('/patch', async ctx => {
 	try {
-             
-        
-        
 		console.log('PATCH /issue')
-		console.log(ctx.request.body)
-		const data = ctx.request.body
+        //validate user id with the token
+		const data = JSON.parse(ctx.request.body)
+        
+        console.log(data.status)
 		const issue = await new Issues()
 		await issue.updateIssuesStatus(data.issueID, data.userID, data.status) 
         

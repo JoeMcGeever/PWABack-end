@@ -51,6 +51,8 @@ router.post('/', async ctx => {
         
 		const issue = await new Issues()
  
+        console.log(data.image)
+        
         
 		await issue.newIssue(data.userID, data.title, data.location, data.description, data.image)
 		ctx.status = 201

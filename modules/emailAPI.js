@@ -44,9 +44,9 @@ class Email {
         
         let textToSend
         if(issueDetails.image == null){
-            textToSend = `Your issue: '${issueDetails.title}' has been assigned! <br> Description: ${issueDetails.description} <br> <a href="bing.com">View in website</a> <br> <a href="google.com">Resolve it here!</a> `
+            textToSend = `Your issue: '${issueDetails.title}' has been assigned! <br> Description: ${issueDetails.description} <br> <br> <a href="https://cement-city.codio-box.uk/#issue?Issue=${issueID}">Resolve it here!</a> `
         } else { //send with the image
-             textToSend = `Your issue: '${issueDetails.title}' has been assigned! <br> Description: ${issueDetails.description} <br> <a href="bing.com">View in website</a> <br> <a href="google.com">Resolve it here!</a> `
+             textToSend = `Your issue: '${issueDetails.title}' has been assigned! <br> Description: ${issueDetails.description} <br> <img src=${issueDetails.image}> <br> <a href="https://cement-city.codio-box.uk/#issue?Issue=${issueID}">Resolve it here!</a> `
         }
         
        
