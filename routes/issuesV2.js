@@ -9,12 +9,14 @@ import Issues from '../modules/issues.js'
 const router = new Router({ prefix: '/v2/issue' })
 
 const hateos = {
-                '/v1/issues' : 'POST - adds an new issue, Data must have userID, title, location, and a description',
-                '/v2/issues' : 'POST - adds an new issue, Data must have userID, title, location, description and a base64 encoded image',
-                '/v1/issues/5' : 'GET - gets an issue with the ID of 5',
-                '/v1/issues/recent/3' : 'GET - gets the 3rd page of issues ordered by recently added'
+                '/v1/issue' : 'POST - adds an new issue, Data must have userID, title, location, description',
+                '/v2/issue' : 'POST - adds an new issue, Data must have userID, title, location, description and a base64 encoded image',
+                '/v1/issue/5' : 'GET - gets an issue with the ID of 5',
+                '/v1/issue/recent/3' : 'GET - gets the 3rd page of issues ordered by recently added',
+                '/v1/issue/all/total' : 'GET - gets total number of issues in the system',
+                '/v1/issue/patch' : 'PATCH - updates the status of an issue. Must have issueID, userID and status sent to it',
+                '/v1/issue/distance/2' : 'GET - gets the 2nd page of issues ordered by nearest. Data must have coordinates in float array: [<LAT>,<LONG>]'
             }
-//'/v1/issues/distance/2' : 'GET - gets the 2nd page of issues ordered by nearest'
 
 
 

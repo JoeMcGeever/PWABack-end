@@ -95,6 +95,90 @@ class Issue {
     
     
     /**
+	 * Gets all issues, ordered by closest to furthest
+	 * @param {int} which page the user wants
+	 * @param {[float, float]} the lat, long coordinates
+	 * @returns {[object]} Returns a list of all issues relevant to that page
+	 */
+	async getIssuesDistance(page, coordinates) {
+		//assume 6 elements per page
+                
+        
+        const elementPerPage = 6
+        const offset = page * elementPerPage
+		let sql = `SELECT issueID, title, description, status, locationXCoord, locationYCoord FROM issue;`
+		try{
+            const records = await all(sql)
+            
+            let order = []
+            
+            
+            let i = 0
+            //order relative to the coordinates given
+            for (i; i < records.length; i++){
+
+                //calculate the absolute distance between the 2 points
+                let distance = Math.abs(Math.sqrt((Math.pow(coordinates[0]-records[i].locationXCoord, 2)) + (Math.pow(coordinates[1]-records[i].locationYCoord, 2))))
+                
+                order.push([i, distance])
+                
+            }
+               
+            //bubble sort:
+            
+            i = 0            
+            var len = order.length;
+            for (i = len-1; i>=0; i--){
+            for(var j = 1; j<=i; j++){
+                if(order[j-1][1]>order[j][1]){
+                    var temp = order[j-1];
+                    order[j-1] = order[j];
+                    order[j] = temp;
+                    }
+                 }
+           }
+            
+           
+            
+           let endread = offset-elementPerPage
+           
+           console.log(endread)
+            
+            let returnRecords = []
+            
+            console.log(order)
+           
+            
+            i = offset - 1 //i represents the furthest element away for that page
+            
+            
+            
+           for(i; i!=endread-1; i--){ //append backwards so it goes from furthest to nearest 
+//                console.log('id = ')
+//                console.log(order[i][0])
+// //                console.log("the distance away:")
+//                console.log(order[i][1])
+// //                console.log("the total record:")
+//                console.log(records[order[endread][0]])
+
+               try{
+                   returnRecords.push(records[order[i][0]])
+               } catch {
+                   continue //if reached the end of the array (last page) and the element exceeds the limit, move on
+               }
+           }
+            
+                        
+           return returnRecords.reverse()
+        }catch(err){
+            throw new Error(err)
+        }
+		return records
+	}
+    
+    
+    
+    /**
 	 * Gets the total number of issues
 	 * @returns {int} Returns the total number of issues
 	 */

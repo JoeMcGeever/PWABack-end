@@ -9,13 +9,15 @@ import Issues from '../modules/issues.js'
 const router = new Router({ prefix: '/v1/issue' })
 
 const hateos = {
-                '/v1/issue' : 'POST - adds an new issue, Data must have userID, title, location, description and an optional image',
+                '/v1/issue' : 'POST - adds an new issue, Data must have userID, title, location, description',
+                '/v2/issue' : 'POST - adds an new issue, Data must have userID, title, location, description and a base64 encoded image',
                 '/v1/issue/5' : 'GET - gets an issue with the ID of 5',
                 '/v1/issue/recent/3' : 'GET - gets the 3rd page of issues ordered by recently added',
                 '/v1/issue/all/total' : 'GET - gets total number of issues in the system',
-                '/v1/issue/patch' : 'PATCH - updates the status of an issue. Must have issueID, userID and status sent to it'
+                '/v1/issue/patch' : 'PATCH - updates the status of an issue. Must have issueID, userID and status sent to it',
+                '/v1/issue/distance/2?lat=<COORD_HERE>&long=<COORD_HERE>' : 'GET - gets the 2nd page of issues ordered by nearest.'
             }
-//'/v1/issue/distance/2' : 'GET - gets the 2nd page of issues ordered by nearest'
+
 
 
 
@@ -103,19 +105,33 @@ router.get('/recent/:page', async ctx => {
 })
 
 //gets a list of issues ordered by closest with pagination
-// router.get('/distance/:page', async ctx = > {
-//    try {
-//         const page = ctx.params.page
-//         const issue = await new Issue()
-//         const issueDetails = issue.getIssuesDistance(page)
-//         ctx.status=200
-//         ctx.body = {'DETAILS: ' : issueDetails, 'further uses ' : hateos}
-// 	} catch(err) {
-// 		console.log(err)
-// 		ctx.status = 404
-// 	  ctx.body = { err: err.message, 'uses ' : hateos }
-// 	}
-// })
+router.get('/distance/:page/:lat/:long', async ctx => {
+    console.log("Distance")
+   try {
+        const page = ctx.params.page
+        
+        console.log(page)
+    
+        let coordinates = []
+        
+        coordinates[0] = ctx.params.lat
+        coordinates[1] = ctx.params.long
+
+        if(coordinates[0] == undefined || coordinates[1] == undefined) throw new Error('Please enter the lat and long coordinates')
+            
+
+       
+        const issue = await new Issues()
+        const issueDetails = await issue.getIssuesDistance(page, coordinates)
+
+        ctx.status=200
+        ctx.body = {issues : issueDetails, 'further uses ' : hateos}
+	} catch(err) {
+		console.log(err)
+		ctx.status = 404
+	  ctx.body = { err: err.message, 'uses ' : hateos }
+	}
+})
 
 
 // adds a new issue (without a picture)
