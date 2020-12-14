@@ -3,8 +3,8 @@
 
 
 import Issue from './issues.js'
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
 
 const sgMail = require('@sendgrid/mail')
 

@@ -1,6 +1,19 @@
 
 /** @module location */
 
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+
+const NodeGeocoder = require('node-geocoder')
+
+
+const options = {
+  provider: 'google',
+  apiKey: 'AIzaSyDxCUp6KciwmfIJYsU0KYg4YSeuz9YOk8s', 
+  formatter: null // 'gpx', 'string', ...
+}
+
+
 
 /**
  * location
@@ -22,8 +35,22 @@ class Location {
 	 * @returns {object} returns the coordinates (x, y)
 	 */
 	async getCoordinates(location) {
-        const coordinates = [0.0, 0.0]
-		return coordinates
+        try{
+            const geocoder = NodeGeocoder(options)
+            const res = await geocoder.geocode(location)
+        
+            console.log(res)
+        
+            const x = res[0].latitude
+            const y = res[0].longitude
+        
+            return [x, y]
+            
+        } catch{
+            console.log("invald request")
+            return [0.0, 0.0]
+        }
+       
 	}
 
 }
