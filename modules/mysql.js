@@ -46,10 +46,12 @@ pool.getConnection((err, connection) => {
 function all(sql) {
     return new Promise( (resolve, reject) => {
         pool.query(sql, (err, res, fields) => {
-            if(res === undefined) {
+            console.log(res === undefined)
+            if(res == undefined) {
                 console.log("undefined")
                 resolve([])
             }
+            console.log("decided to not care")
 //             console.log(res === undefined)
 //             console.log(res == undefined)
 //             console.log(typeof(res))
