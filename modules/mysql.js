@@ -47,7 +47,9 @@ function all(sql) {
     return new Promise( (resolve, reject) => {
         pool.query(sql, (err, res, fields) => {
             if(res === undefined) resolve([])
-            console.log(res)
+            console.log(res === undefined)
+            console.log(res == undefined)
+            console.log(typeof(res))
             const result = JSON.parse(JSON.stringify(res))
             if(err) reject(err)
             resolve(result)
