@@ -46,16 +46,13 @@ pool.getConnection((err, connection) => {
 function all(sql) {
     return new Promise( (resolve, reject) => {
         pool.query(sql, (err, res, fields) => {
-            let isUndefined = (res === undefined)
-            console.log(isUndefined)
-            if(isUndefined) {
-                console.log("undefined")
-                resolve([])
-            }
-            console.log("decided to not care")
-//             console.log(res === undefined)
-//             console.log(res == undefined)
-//             console.log(typeof(res))
+            if(res === undefined) resolve([]) //doesnt resolve if undefined?
+
+            
+            resolve([])
+            
+            
+            
             const result = JSON.parse(JSON.stringify(res))
             if(err) reject(err)
             resolve(result)
