@@ -10,7 +10,9 @@ process.env.CLEARDB_DATABASE_URL = 'mysql://ba3d6ebc708045:0fbfea9b@us-cdbr-east
 
 const localDB = 'mysql://root:short-panda@localhost/local_community?reconnect=true' //i think ours is short-panda
 const connectionString = process.env.CLEARDB_DATABASE_URL || localDB
-//const pool = mysql.createPool(connectionString)
+const pool = mysql.createPool(connectionString)
+
+console.log(connectionString)
 
 //  const pool = mysql.createPool({
 //  	host: 'localhost',
@@ -19,12 +21,12 @@ const connectionString = process.env.CLEARDB_DATABASE_URL || localDB
 //  	password: 'p455w0rd'
 //  })
  
-  const pool = mysql.createPool({
- 	host: 'us-cdbr-east-02.cleardb.com',
- 	user: 'ba3d6ebc708045',
- 	database: 'local_community',
- 	password: '0fbfea9b '
- })
+//   const pool = mysql.createPool({
+//  	host: 'us-cdbr-east-02.cleardb.com',
+//  	user: 'ba3d6ebc708045',
+//  	database: 'local_community',
+//  	password: '0fbfea9b '
+//  })
  
 
 pool.getConnection((err, connection) => {
@@ -47,12 +49,6 @@ function all(sql) {
     return new Promise( (resolve, reject) => {
         pool.query(sql, (err, res, fields) => {
             if(res === undefined) resolve([]) //doesnt resolve if undefined?
-
-            
-            resolve([])
-            
-            
-            
             const result = JSON.parse(JSON.stringify(res))
             if(err) reject(err)
             resolve(result)
