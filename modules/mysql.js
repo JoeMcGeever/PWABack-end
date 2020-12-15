@@ -3,7 +3,7 @@
 
 import mysql from 'mysql'
 
-// process.env.CLEARDB_DATABASE_URL = 'mysql://b2965bb0bc5ea2:307a3aca@us-cdbr-east-02.cleardb.com/heroku_99fb0a6c0341669?reconnect=true'
+process.env.CLEARDB_DATABASE_URL = 'mysql://ba3d6ebc708045:0fbfea9b@us-cdbr-east-02.cleardb.com/heroku_704afd39567470d?reconnect=true'
 // const connectionString = 'process.env.CLEARDB_DATABASE_URL'
 // const pool = mysql.createPool(connectionString)
 
@@ -12,19 +12,19 @@ const localDB = 'mysql://root:short-panda@localhost/local_community?reconnect=tr
 const connectionString = process.env.CLEARDB_DATABASE_URL || localDB
 //const pool = mysql.createPool(connectionString)
 
- const pool = mysql.createPool({
- 	host: 'localhost',
- 	user: 'root',
- 	database: 'local_community',
- 	password: 'p455w0rd'
- })
- 
-//   const pool = mysql.createPool({
-//  	host: 'us-cdbr-east-02.cleardb.com',
-//  	user: 'ba3d6ebc708045',
+//  const pool = mysql.createPool({
+//  	host: 'localhost',
+//  	user: 'root',
 //  	database: 'local_community',
-//  	password: '0fbfea9b '
+//  	password: 'p455w0rd'
 //  })
+ 
+  const pool = mysql.createPool({
+ 	host: 'us-cdbr-east-02.cleardb.com',
+ 	user: 'ba3d6ebc708045',
+ 	database: 'local_community',
+ 	password: '0fbfea9b '
+ })
  
 
 pool.getConnection((err, connection) => {
