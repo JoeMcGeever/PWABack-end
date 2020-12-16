@@ -15,7 +15,10 @@ const hateos = {
                 '/v1/issue/recent/3' : 'GET - gets the 3rd page of issues ordered by recently added',
                 '/v1/issue/all/total' : 'GET - gets total number of issues in the system',
                 '/v1/issue/patch' : 'PATCH - updates the status of an issue. Must have issueID, userID and status sent to it',
-                '/v1/issue/distance/2?lat=<COORD_HERE>&long=<COORD_HERE>' : 'GET - gets the 2nd page of issues ordered by nearest.'
+                '/v1/issue/distance/2?lat=<COORD_HERE>&long=<COORD_HERE>' : 'GET - gets the 2nd page of issues ordered by nearest.',
+                '/v1/accounts' : 'POST - Adds a new account. Data must have username, password and email',
+                '/v1/accounts/testUser' : 'GET - Checks if credentials are valid for testUser',
+                '/v1/accounts/top10' : 'GET - Returns the top 10 users, ordered by score'
             }
 
 
