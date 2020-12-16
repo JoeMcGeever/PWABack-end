@@ -2,10 +2,10 @@
 /** @module Issues */
 
 
-import { extractCredentials } from '../modules/common.js'
-import { get, all, run } from '../modules/mysql.js'
-import Location from '../modules/locationAPI.js'
-import Email from '../modules/emailAPI.js'
+import { extractCredentials } from '../modules/common.js';
+import { get, all, run } from '../modules/mysql.js';
+import Location from '../modules/locationAPI.js';
+import Email from '../modules/emailAPI.js';
 
 
 /**
@@ -18,8 +18,8 @@ class Issue {
    */
 	constructor() {
 		return (async() => {
-			return this
-		})()
+			return this;
+		})();
 	}
     
     
@@ -36,24 +36,24 @@ class Issue {
             //no image yet -> for v2 of the api
 
   
-            const locationClass = await new Location()
-            const userCoords = await locationClass.getCoordinates(location)   
+            const locationClass = await new Location();
+            const userCoords = await locationClass.getCoordinates(location);   
             
-            description = description //Format the description (with newlines etc)
-            let sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, status) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "new")`
+            description = description; //Format the description (with newlines etc)
+            let sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, status) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "new")`;
 //             if(image != null){
 //                 sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, status, image) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "new", ${image}")`
 //             }
-			await run(sql) //insert the issue into the db
+			await run(sql); //insert the issue into the db
                        
-            sql = `UPDATE accounts SET score = score + 10 WHERE userID = ${userID}`//append 10 to score
-            await run(sql) //update the score of the user           
-            return true
+            sql = `UPDATE accounts SET score = score + 10 WHERE userID = ${userID}`;//append 10 to score
+            await run(sql); //update the score of the user           
+            return true;
                         
 		} catch(err) {
-			console.log('module error')
-			console.log(err)
-			throw err
+			console.log('module error');
+			console.log(err);
+			throw err;
 		}
 	}
     
@@ -64,12 +64,12 @@ class Issue {
 	 * @returns {object} Returns the issue details
 	 */
 	async getIssue(id) {
-        let sql = `SELECT * FROM issue WHERE issueID="${id}";`  
+        let sql = `SELECT * FROM issue WHERE issueID="${id}";`;  
         try{
-            const records = await get(sql)
-            return records
+            const records = await get(sql);
+            return records;
         }catch(err){
-            throw new Error(`The SQL query: "${sql}" failed`)
+            throw new Error(`The SQL query: "${sql}" failed`);
         }
 	}
     
@@ -81,16 +81,16 @@ class Issue {
 	 */
 	async getIssues(page) {
 		//assume 5 elements per page
-        const elementPerPage = 6
-        const offset = page * elementPerPage
-		let sql = `SELECT issueID, title, description, status FROM issue ORDER BY timeOfIssue DESC LIMIT ${elementPerPage} OFFSET ${offset};`
+        const elementPerPage = 6;
+        const offset = page * elementPerPage;
+		let sql = `SELECT issueID, title, description, status FROM issue ORDER BY timeOfIssue DESC LIMIT ${elementPerPage} OFFSET ${offset};`;
 		try{
-            const records = await all(sql)
-            return records
+            const records = await all(sql);
+            return records;
         }catch(err){
-            throw new Error(`The SQL query: "${sql}" failed`)
+            throw new Error(`The SQL query: "${sql}" failed`);
         }
-		return records
+		return records;
 	}
     
     
@@ -104,29 +104,29 @@ class Issue {
 		//assume 6 elements per page
                 
         
-        const elementPerPage = 6
-        const offset = page * elementPerPage
-		let sql = `SELECT issueID, title, description, status, locationXCoord, locationYCoord FROM issue;`
+        const elementPerPage = 6;
+        const offset = page * elementPerPage;
+		let sql = `SELECT issueID, title, description, status, locationXCoord, locationYCoord FROM issue;`;
 		try{
-            const records = await all(sql)
+            const records = await all(sql);
             
-            let order = []
+            let order = [];
             
             
-            let i = 0
+            let i = 0;
             //order relative to the coordinates given
             for (i; i < records.length; i++){
 
                 //calculate the absolute distance between the 2 points
-                let distance = Math.abs(Math.sqrt((Math.pow(coordinates[0]-records[i].locationXCoord, 2)) + (Math.pow(coordinates[1]-records[i].locationYCoord, 2))))
+                let distance = Math.abs(Math.sqrt((Math.pow(coordinates[0]-records[i].locationXCoord, 2)) + (Math.pow(coordinates[1]-records[i].locationYCoord, 2))));
                 
-                order.push([i, distance])
+                order.push([i, distance]);
                 
             }
                
             //bubble sort:
             
-            i = 0            
+            i = 0;            
             var len = order.length;
             for (i = len-1; i>=0; i--){
             for(var j = 1; j<=i; j++){
@@ -140,16 +140,16 @@ class Issue {
             
            
             
-           let endread = offset-elementPerPage
+           let endread = offset-elementPerPage;
            
-           console.log(endread)
+           console.log(endread);
             
-            let returnRecords = []
+            let returnRecords = [];
             
-            console.log(order)
+            console.log(order);
            
             
-            i = offset - 1 //i represents the furthest element away for that page
+            i = offset - 1; //i represents the furthest element away for that page
             
             
             
@@ -162,18 +162,18 @@ class Issue {
 //                console.log(records[order[endread][0]])
 
                try{
-                   returnRecords.push(records[order[i][0]])
+                   returnRecords.push(records[order[i][0]]);
                } catch {
-                   continue //if reached the end of the array (last page) and the element exceeds the limit, move on
+                   continue; //if reached the end of the array (last page) and the element exceeds the limit, move on
                }
            }
             
                         
-           return returnRecords.reverse()
+           return returnRecords.reverse();
         }catch(err){
-            throw new Error(err)
+            throw new Error(err);
         }
-		return records
+		return records;
 	}
     
     
@@ -183,14 +183,14 @@ class Issue {
 	 * @returns {int} Returns the total number of issues
 	 */
     async getIssueCount() {
-        let sql = 'SELECT COUNT(issueID) as count FROM issue;'
+        let sql = 'SELECT COUNT(issueID) as count FROM issue;';
         try{
-            const countIssues = await get(sql)
-            return countIssues.count
+            const countIssues = await get(sql);
+            return countIssues.count;
         }catch(err){
-            throw new Error(`The SQL query: "${sql}" failed`)
+            throw new Error(`The SQL query: "${sql}" failed`);
         }
-        return countIssues
+        return countIssues;
     }
     
     
@@ -208,107 +208,107 @@ class Issue {
         
         
          if(!(status == 'verified' || status == 'assigned' || status == 'resolved')){ //status has to be one of these three strings
-            throw new Error('Status can only be either "verified", "assigned" or "resolved"')
+            throw new Error('Status can only be either "verified", "assigned" or "resolved"');
         }
 
         try {
         
             
-            console.log(status)
+            console.log(status);
         
-        let sql = `SELECT status FROM issue WHERE issueID = ${issueID}`
-        const currentStatus = await get(sql) //validation based on the status change
+        let sql = `SELECT status FROM issue WHERE issueID = ${issueID}`;
+        const currentStatus = await get(sql); //validation based on the status change
         
-        console.log("current status = ")
-        console.log(currentStatus.status)
-        console.log("new status = ")
-        console.log(status)
+        console.log("current status = ");
+        console.log(currentStatus.status);
+        console.log("new status = ");
+        console.log(status);
             
         if(currentStatus == null){
-            throw new Error(`No issue has been found`)
+            throw new Error(`No issue has been found`);
         }
         if(currentStatus.status==status){
-            throw new Error(`The status is already "${status}"`)
+            throw new Error(`The status is already "${status}"`);
         }
         if(currentStatus.status=="new" && status != "verified"){
-            throw new Error(`The status must be verified before being ${status}`)
+            throw new Error(`The status must be verified before being ${status}`);
         }
         if(currentStatus.status=="assigned" && status != "resolved"){
-            throw new Error('the status can only be resolved from here')
+            throw new Error('the status can only be resolved from here');
         }
             
             
             
             
         if(status=="verified" || status =="assigned"){ //if the user wants to update the issue to verified / assigned
-            sql = `SELECT userID FROM issue WHERE issueID = ${issueID}` //but they are the original user
-            let theIssuesUser = await get(sql)
+            sql = `SELECT userID FROM issue WHERE issueID = ${issueID}`; //but they are the original user
+            let theIssuesUser = await get(sql);
             if(theIssuesUser.userID==userID){
-                throw new Error('The user who created the issue cannot verify / be assigned to the task')
+                throw new Error('The user who created the issue cannot verify / be assigned to the task');
             }
         }  
             
                        
         if(status=="resolved"){ //if the user wants to update the issue to resolved  
-            console.log("in resolved")
-            console.log(status)
-            sql = `SELECT userID, workedOnBy FROM issue WHERE issueID = ${issueID}` //but it is not their issue to resolve
-            let user = await get(sql)
-            if(user.userID!=userID) throw new Error('Only the user who created the issue can resolve the issue')
+            console.log("in resolved");
+            console.log(status);
+            sql = `SELECT userID, workedOnBy FROM issue WHERE issueID = ${issueID}`; //but it is not their issue to resolve
+            let user = await get(sql);
+            if(user.userID!=userID) throw new Error('Only the user who created the issue can resolve the issue');
             
-            sql = `SELECT isCouncil FROM accounts WHERE userID = ${user.workedOnBy}`
-            let isCouncil = await get(sql)
-            console.log(isCouncil)
-            if(isCouncil.isCouncil==1) status = 'Resolved by Council'
+            sql = `SELECT isCouncil FROM accounts WHERE userID = ${user.workedOnBy}`;
+            let isCouncil = await get(sql);
+            console.log(isCouncil);
+            if(isCouncil.isCouncil==1) status = 'Resolved by Council';
         }
      
-        console.log(status)
+        console.log(status);
             
-            console.log("here??")
+            console.log("here??");
 
-        sql = `UPDATE issue SET status = "${status}" WHERE issueID = ${issueID}`
-        await run(sql) //actually updates the status of the issue
-        console.log(`After update status statement, sql = ${sql}`)
+        sql = `UPDATE issue SET status = "${status}" WHERE issueID = ${issueID}`;
+        await run(sql); //actually updates the status of the issue
+        console.log(`After update status statement, sql = ${sql}`);
         
             
-        console.log("updated")
+        console.log("updated");
             
         
         
         if(status=='verified'){
-          sql = `UPDATE accounts SET score = score + 10 WHERE userID = ${userID}`//append 10 to score
-          console.log(sql)
-          await run(sql)
-          console.log("Status has been changed to verified. +10 score to the user")
+          sql = `UPDATE accounts SET score = score + 10 WHERE userID = ${userID}`;//append 10 to score
+          console.log(sql);
+          await run(sql);
+          console.log("Status has been changed to verified. +10 score to the user");
         }else if(status=='assigned'){
             //set the assigned user:
-            sql = `UPDATE issue SET workedOnBy = ${userID} WHERE issueID = ${issueID}`
-            await run(sql)
+            sql = `UPDATE issue SET workedOnBy = ${userID} WHERE issueID = ${issueID}`;
+            await run(sql);
             //send email here
-            sql = `SELECT accounts.email FROM issue INNER JOIN accounts ON accounts.userID=issue.userID WHERE issue.issueID=${issueID}`
-            let userEmail = await get(sql)
-            console.log("Status is assigned. Send email to:")
-            console.log(userEmail.email)
+            sql = `SELECT accounts.email FROM issue INNER JOIN accounts ON accounts.userID=issue.userID WHERE issue.issueID=${issueID}`;
+            let userEmail = await get(sql);
+            console.log("Status is assigned. Send email to:");
+            console.log(userEmail.email);
             //gets the email using an inner join (fk of userID)
-            const emailClass = await new Email()
-            await emailClass.sendEmail(userEmail.email, issueID)  //calls the send email function           
+            const emailClass = await new Email();
+            await emailClass.sendEmail(userEmail.email, issueID); //calls the send email function           
         }
         else if(status=='resolved' || status=='Resolved by Council'){
-          sql = `UPDATE accounts SET score = score + 20 WHERE userID = ${userID}`//append 20 to score (userID will be the user who created the issue in this instance)
-          await run(sql)
-          sql = `UPDATE accounts, (SELECT workedOnBy from issue WHERE issueID = ${issueID}) AS issue SET accounts.score = accounts.score + 50 WHERE accounts.userID = issue.workedOnBy`
+          sql = `UPDATE accounts SET score = score + 20 WHERE userID = ${userID}`;//append 20 to score (userID will be the user who created the issue in this instance)
+          await run(sql);
+          sql = `UPDATE accounts, (SELECT workedOnBy from issue WHERE issueID = ${issueID}) AS issue SET accounts.score = accounts.score + 50 WHERE accounts.userID = issue.workedOnBy`;
           //append 50 to the other users score 
-          await run(sql)
+          await run(sql);
         }
         
         }catch(err){
-            throw new Error(err)
+            throw new Error(err);
         }
     
     
-		return true
+		return true;
 	}
 
 }
 
-export default Issue
+export default Issue;

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e # abort script at first error
+
+echo "POST-COMMIT" 
+
+set +e
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD` 
+echo "current branch: ${CURRENT_BRANCH}" # echos what branch the user is in
+set -e
+
+EMAIL=$(git config user.email) # gets the git saved username in configs
+echo "registered email: ${EMAIL}" # outputs which email is currently being used
+
+if [[ $EMAIL != *"@coventry.ac.uk" ]] # validating to see if it is a valid cov uni email address
+then
+	echo "invalid email"
+	echo "aborting commit"
+	exit 1 # exits if so
+fi

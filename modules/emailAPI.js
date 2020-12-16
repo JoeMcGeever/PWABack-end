@@ -2,11 +2,11 @@
 /** @module email */
 
 
-import Issue from './issues.js'
-import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
+import Issue from './issues.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
-const sgMail = require('@sendgrid/mail')
+const sgMail = require('@sendgrid/mail');
 
 
 
@@ -20,8 +20,8 @@ class Email {
    */
 	constructor() {
 		return (async() => {
-			return this
-		})()
+			return this;
+		})();
 	}
 
     /**
@@ -37,16 +37,16 @@ class Email {
 // A button to click to resolve the issue.
         
         
-            const issueClass = await new Issue()
-            const issueDetails = await issueClass.getIssue(issueID)
+            const issueClass = await new Issue();
+            const issueDetails = await issueClass.getIssue(issueID);
             
                 
         
-        let textToSend
+        let textToSend;
         if(issueDetails.image == null){
-            textToSend = `Your issue: '${issueDetails.title}' has been assigned! <br> Description: ${issueDetails.description} <br> <br> <a href="https://cement-city.codio-box.uk/#issue?Issue=${issueID}">Resolve it here!</a> `
+            textToSend = `Your issue: '${issueDetails.title}' has been assigned! <br> Description: ${issueDetails.description} <br> <br> <a href="https://cement-city.codio-box.uk/#issue?Issue=${issueID}">Resolve it here!</a> `;
         } else { //send with the image
-             textToSend = `Your issue: '${issueDetails.title}' has been assigned! <br> Description: ${issueDetails.description} <br> <img src=${issueDetails.image}> <br> <a href="https://cement-city.codio-box.uk/#issue?Issue=${issueID}">Resolve it here!</a> `
+             textToSend = `Your issue: '${issueDetails.title}' has been assigned! <br> Description: ${issueDetails.description} <br> <img src=${issueDetails.image}> <br> <a href="https://cement-city.codio-box.uk/#issue?Issue=${issueID}">Resolve it here!</a> `;
         }
         
        
@@ -57,19 +57,19 @@ class Email {
             subject: `"${issueDetails.title}" - issue has been assigned`,
             text: textToSend,
             html: `<strong> ${textToSend}.</strong>`,
-        }
+        };
             sgMail
   .send(msg)
   .then(() => {
-    console.log('Email sent')
+    console.log('Email sent');
   })
   .catch((error) => {
-    console.error(error.response.body)
-  })
-		return true
+    console.error(error.response.body);
+  });
+		return true;
 	}
 
 }
 
-export default Email
+export default Email;
 

@@ -1,13 +1,13 @@
 
 /** @module Accounts */
 
-import bcrypt from 'bcrypt-promise'
+import bcrypt from 'bcrypt-promise';
 
-import { extractCredentials } from '../modules/common.js'
-import { get, all, run } from '../modules/mysql.js'
-import Location from '../modules/locationAPI.js'
+import { extractCredentials } from '../modules/common.js';
+import { get, all, run } from '../modules/mysql.js';
+import Location from '../modules/locationAPI.js';
 
-const saltRounds = 10
+const saltRounds = 10;
 
 /**
  * Accounts
@@ -19,8 +19,8 @@ class Accounts {
    */
 	constructor() {
 		return (async() => {
-			return this
-		})()
+			return this;
+		})();
 	}
 
     /**
@@ -36,25 +36,25 @@ class Accounts {
                
 		try {
 			Array.from(arguments).forEach( val => {
-				if(val.length === 0) throw new Error('Please enter all of the fields!')
-			})
-			let sql = `SELECT COUNT(userID) as records FROM accounts WHERE username="${user}";`
-			const data = await get(sql)
-			console.log('data: ', data)
-			if(data.records !== 0) throw new Error(`username "${user}" already in use`)
-			sql = `SELECT COUNT(userID) as records FROM accounts WHERE email="${email}";`
-			const emails = await get(sql)
-			console.log('emails: ', emails)
-			if(emails.records !== 0) throw new Error(`email address "${email}" is already in use`)
-			pass = await bcrypt.hash(pass, saltRounds)
-			console.log(`password length: ${pass.length}`)
-			sql = `INSERT INTO accounts(username, password, email, isCouncil, location) VALUES("${user}", "${pass}", "${email}", ${isCouncil}, "${location}")`
-			await run(sql)
-			return true
+				if(val.length === 0) throw new Error('Please enter all of the fields!');
+			});
+			let sql = `SELECT COUNT(userID) as records FROM accounts WHERE username="${user}";`;
+			const data = await get(sql);
+			console.log('data: ', data);
+			if(data.records !== 0) throw new Error(`username "${user}" already in use`);
+			sql = `SELECT COUNT(userID) as records FROM accounts WHERE email="${email}";`;
+			const emails = await get(sql);
+			console.log('emails: ', emails);
+			if(emails.records !== 0) throw new Error(`email address "${email}" is already in use`);
+			pass = await bcrypt.hash(pass, saltRounds);
+			console.log(`password length: ${pass.length}`);
+			sql = `INSERT INTO accounts(username, password, email, isCouncil, location) VALUES("${user}", "${pass}", "${email}", ${isCouncil}, "${location}")`;
+			await run(sql);
+			return true;
 		} catch(err) {
-			console.log('module error')
-			console.log(err)
-			throw err
+			console.log('module error');
+			console.log(err);
+			throw err;
 		}
 	}
 
@@ -68,14 +68,14 @@ class Accounts {
                 
 		try {
 
-			const sql = 'SELECT username, score from accounts ORDER BY score desc limit 10;' //gets top 10 users
-            const topTen = await all(sql)
-            return topTen
+			const sql = 'SELECT username, score from accounts ORDER BY score desc limit 10;'; //gets top 10 users
+            const topTen = await all(sql);
+            return topTen;
             
 		} catch(err) {
-			console.log('module error')
-			console.log(err)
-			throw err
+			console.log('module error');
+			console.log(err);
+			throw err;
 		}
 	}
 	
@@ -86,19 +86,19 @@ class Accounts {
 	 * @returns {int} returns the users ID if credentials are valid
 	 */
 	async checkToken(token) {
-		const login = extractCredentials(token)
-		let sql = `SELECT userID, username, isCouncil FROM accounts WHERE username="${login.user}";`
-		const records = await get(sql)
-		if(records == null) throw new Error(`username "${login.user}" not found`)
-		sql = `SELECT password FROM accounts WHERE username = "${login.user}";`
-		const record = await get(sql)
-		const valid = await bcrypt.compare(login.pass, record.password)
-		if(valid === false) throw new Error(`invalid password for account "${login.user}"`)
-        console.log(records)
-		return records
+		const login = extractCredentials(token);
+		let sql = `SELECT userID, username, isCouncil FROM accounts WHERE username="${login.user}";`;
+		const records = await get(sql);
+		if(records == null) throw new Error(`username "${login.user}" not found`);
+		sql = `SELECT password FROM accounts WHERE username = "${login.user}";`;
+		const record = await get(sql);
+		const valid = await bcrypt.compare(login.pass, record.password);
+		if(valid === false) throw new Error(`invalid password for account "${login.user}"`);
+        console.log(records);
+		return records;
 	}
 
 }
 
-export default Accounts
+export default Accounts;
 

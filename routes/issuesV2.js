@@ -1,12 +1,12 @@
 
 /* issuesV2.js */
 
-import Router from 'koa-router'
+import Router from 'koa-router';
 
-import Accounts from '../modules/accounts.js'
-import Issues from '../modules/issues.js'
+import Accounts from '../modules/accounts.js';
+import Issues from '../modules/issues.js';
 
-const router = new Router({ prefix: '/v2/issue' })
+const router = new Router({ prefix: '/v2/issue' });
 
 const hateos = {
                 '/v1/issue' : 'POST - adds an new issue, Data must have userID, title, location, description',
@@ -19,29 +19,29 @@ const hateos = {
                 '/v1/accounts' : 'POST - Adds a new account. Data must have username, password and email',
                 '/v1/accounts/testUser' : 'GET - Checks if credentials are valid for testUser',
                 '/v1/accounts/top10' : 'GET - Returns the top 10 users, ordered by score'
-            }
+            };
 
 
 
 async function middleware(ctx, next) {
-	console.log('MIDDLEWARE')
+	console.log('MIDDLEWARE');
 	if(ctx.method !== 'GET') {
-		const auth = ctx.request.headers.authorization
+		const auth = ctx.request.headers.authorization;
 		try {
-			const token = ctx.request.headers.authorization
-			const account = await new Accounts()
-			const validUser = await account.checkToken(token)
-			await next()
+			const token = ctx.request.headers.authorization;
+			const account = await new Accounts();
+			const validUser = await account.checkToken(token);
+			await next();
 		} catch(err) {
-			ctx.status = 401
-			ctx.body = { err: err.message }
+			ctx.status = 401;
+			ctx.body = { err: err.message };
 		}
 	} else {
-		await next()
+		await next();
 	}
 }
 
-router.use(middleware)
+router.use(middleware);
 
 
 
@@ -49,26 +49,26 @@ router.use(middleware)
 // adds a new issue with a base64 encoded picture
 router.post('/', async ctx => {
 	try {
-		console.log('POST /issue')
-		console.log(ctx.request.body)
-		const data = JSON.parse(ctx.request.body)
+		console.log('POST /issue');
+		console.log(ctx.request.body);
+		const data = JSON.parse(ctx.request.body);
         
         
-		const issue = await new Issues()
+		const issue = await new Issues();
  
-        console.log(data.image)
+        console.log(data.image);
         
         
-		await issue.newIssue(data.userID, data.title, data.location, data.description, data.image)
-		ctx.status = 201
-		ctx.body = {status: 'success', msg: 'Issue created', 'further uses ' : hateos}
+		await issue.newIssue(data.userID, data.title, data.location, data.description, data.image);
+		ctx.status = 201;
+		ctx.body = {status: 'success', msg: 'Issue created', 'further uses ' : hateos};
 	} catch(err) {
-		console.log('post error')
-		console.log(err)
-		ctx.status = 404
-	  ctx.body = { err: err.message, 'uses ' : hateos }
+		console.log('post error');
+		console.log(err);
+		ctx.status = 404;
+	  ctx.body = { err: err.message, 'uses ' : hateos };
 	}
-})
+});
 
 
 
@@ -80,4 +80,4 @@ router.post('/', async ctx => {
 
 
 
-export default router
+export default router;
