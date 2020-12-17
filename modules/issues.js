@@ -39,7 +39,7 @@ class Issue {
             const locationClass = await new Location();
             const userCoords = await locationClass.getCoordinates(location);   
             
-            description = description; //Format the description (with newlines etc)
+            description = `${location} - ${description}`;
             let sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, status) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "new")`;
             if(image != null){
                 sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, status, image) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "new", "${image}")`
