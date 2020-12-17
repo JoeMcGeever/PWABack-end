@@ -41,9 +41,9 @@ class Issue {
             
             description = description; //Format the description (with newlines etc)
             let sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, status) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "new")`;
-//             if(image != null){
-//                 sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, status, image) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "new", ${image}")`
-//             }
+            if(image != null){
+                sql = `INSERT INTO issue(title, description, locationXCoord, locationYCoord, userID, status, image) VALUES("${title}", "${description}", ${userCoords[0]}, ${userCoords[1]}, "${userID}", "new", "${image}")`
+            }
 			await run(sql); //insert the issue into the db
                        
             sql = `UPDATE accounts SET score = score + 10 WHERE userID = ${userID}`;//append 10 to score
