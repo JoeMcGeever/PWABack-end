@@ -1,18 +1,11 @@
 
-# REST Web API Template
 
-This code provides a working template for the development of modern REST APIs connecting to a MySQL database.
+This is my API for the local community project.
 
-It only runs on Codio boxes.
+A link to the live heroku server:
 
-To install, run the following command from inside the Codio box:
+https://safe-tor-25899.herokuapp.com/#home
 
-```
-$ curl -sL https://bit.ly/35UD7Hv | sudo -E bash -
-```
 
-> Note this will delete ALL the existing content from your Codio Box.
-=======
-# API7097CEM
-My API for my local community 7097CEM project
->>>>>>> 6c8fd03dac2ab617b8c0843dbdf82cba9e130cfb
+
+
