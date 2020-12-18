@@ -3,22 +3,22 @@
 
 import mysql from 'mysql';
 
-process.env.CLEARDB_DATABASE_URL = 'mysql://ba3d6ebc708045:0fbfea9b@us-cdbr-east-02.cleardb.com/heroku_704afd39567470d?reconnect=true'; //PRODUCTION
+// process.env.CLEARDB_DATABASE_URL = 'mysql://ba3d6ebc708045:0fbfea9b@us-cdbr-east-02.cleardb.com/heroku_704afd39567470d?reconnect=true'; //PRODUCTION
 
 
 
 const localDB = 'mysql://root:short-panda@localhost/local_community?reconnect=true'; //i think ours is short-panda
 const connectionString = process.env.CLEARDB_DATABASE_URL || localDB;
-const pool = mysql.createPool(connectionString); //PRODUCTION
+// const pool = mysql.createPool(connectionString); //PRODUCTION
 
 console.log(connectionString);
 
-//  const pool = mysql.createPool({ //DEVELOPMENT
-//  	host: 'localhost',
-//  	user: 'root',
-//  	database: 'local_community',
-//  	password: 'p455w0rd'
-//  })
+ const pool = mysql.createPool({ //DEVELOPMENT
+ 	host: 'localhost',
+ 	user: 'root',
+ 	database: 'local_community',
+ 	password: 'p455w0rd'
+ })
  
 
  
